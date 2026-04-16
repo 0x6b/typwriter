@@ -36,7 +36,7 @@ typst-utils = { version = "0.14.2", optional = true }
 typstyle-core = { version = "0.14", optional = true }
 
 # PDF metadata management
-lopdf = { version = "0.39", optional = true }
+lopdf = { version = "0.40", optional = true }
 xmp-writer = { version = "0.3", optional = true }
 
 # PDF permission setting
@@ -48,7 +48,7 @@ serde = { version = "1.0", features = ["derive"] }
 # Watch server
 axum = { version = "0.8", features = ["ws"], optional = true }
 notify = { version = "8.2", optional = true }
-tokio = { version = "1.49", features = ["fs", "macros", "net", "rt-multi-thread", "signal"], optional = true }
+tokio = { version = "1.52", features = ["fs", "macros", "net", "rt-multi-thread", "signal"], optional = true }
 
 # Open in browser
 open = { version = "5.3", optional = true }
@@ -57,19 +57,19 @@ open = { version = "5.3", optional = true }
 log = { version = "0.4", default-features = false, optional = true }
 
 [build-dependencies]
-dirs = "6"
-flate2 = "1"
+dirs = "6.0"
+flate2 = "1.1"
 serde = { version = "1.0", features = ["derive"] }
 tar = "0.4"
-toml = "0.9"
-ureq = "3"
-zip = "7"
+toml = "1.1"
+ureq = "3.3"
+zip = "8.5"
 
 [dev-dependencies]
 anyhow = "1.0"
 sha2_hasher = { version = "0.3", features = ["sync"] }
 test-context = "0.5"
-tokio = { version = "1.49", features = ["net"] }
+tokio = { version = "1.52", features = ["net"] }
 
 [features]
 default = []
