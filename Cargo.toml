@@ -1,7 +1,7 @@
 [package]
 name = "typwriter"
 description = "A Rust library for compiling, formatting, and watching Typst documents, with PDF metadata and permission management."
-version = "0.14.26"
+version = "0.14.27"
 edition = "2024"
 authors = ["kaoru <k@warpnine.io>"]
 license = "Apache-2.0"
