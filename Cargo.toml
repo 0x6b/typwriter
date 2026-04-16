@@ -1,7 +1,7 @@
 [package]
 name = "typwriter"
 description = "A Rust library for compiling, formatting, and watching Typst documents, with PDF metadata and permission management."
-version = "0.14.26"
+version = "0.14.27"
 edition = "2024"
 authors = ["kaoru <k@warpnine.io>"]
 license = "Apache-2.0"
@@ -36,7 +36,7 @@ typst-utils = { version = "0.14.2", optional = true }
 typstyle-core = { version = "0.14", optional = true }
 
 # PDF metadata management
-lopdf = { version = "0.39", optional = true }
+lopdf = { version = "0.40", optional = true }
 xmp-writer = { version = "0.3", optional = true }
 
 # PDF permission setting
@@ -48,7 +48,7 @@ serde = { version = "1.0", features = ["derive"] }
 # Watch server
 axum = { version = "0.8", features = ["ws"], optional = true }
 notify = { version = "8.2", optional = true }
-tokio = { version = "1.49", features = ["fs", "macros", "net", "rt-multi-thread", "signal"], optional = true }
+tokio = { version = "1.52", features = ["fs", "macros", "net", "rt-multi-thread", "signal"], optional = true }
 
 # Open in browser
 open = { version = "5.3", optional = true }
@@ -57,19 +57,19 @@ open = { version = "5.3", optional = true }
 log = { version = "0.4", default-features = false, optional = true }
 
 [build-dependencies]
-dirs = "6"
-flate2 = "1"
+dirs = "6.0"
+flate2 = "1.1"
 serde = { version = "1.0", features = ["derive"] }
 tar = "0.4"
-toml = "0.9"
-ureq = "3"
-zip = "7"
+toml = "1.1"
+ureq = "3.3"
+zip = "8.5"
 
 [dev-dependencies]
 anyhow = "1.0"
 sha2_hasher = { version = "0.3", features = ["sync"] }
 test-context = "0.5"
-tokio = { version = "1.49", features = ["net"] }
+tokio = { version = "1.52", features = ["net"] }
 
 [features]
 default = []
@@ -106,24 +106,27 @@ watch = ["compile", "dep:axum", "dep:log", "dep:notify", "dep:open", "dep:tokio"
 embed_cmu_roman = ["compile"]
 ## assets/fonts/iAWriterDuo/iAWriterDuoS-*
 embed_ia_writer_duo = ["compile"]
+## JetBrainsMonoNL-* (downloaded at build time)
+embed_jet_brains_mono_nl = ["compile"]
 ## assets/fonts/NotoEmoji/NotoEmoji-VariableFont_wght.ttf
 embed_noto_emoji = ["compile"]
-## assets/fonts/NotoSansJP/NotoSansJP-*
+## NotoSansJP-* (downloaded at build time)
 embed_noto_sans_jp = ["compile"]
-## assets/fonts/NotoSerifJP/NotoSerifJP-*
+## NotoSerifJP-* (downloaded at build time)
 embed_noto_serif_jp = ["compile"]
-## assets/fonts/Recursive/recursive-static-OTFs.otc
+## recursive-static-OTFs.otc (downloaded at build time)
 embed_recursive = ["compile"]
 ## assets/fonts/SourceCodePro/SourceCodePro-*
 embed_source_code_pro = ["compile"]
-## assets/fonts/WarpnineMono/WarpnineMono-*
+## WarpnineMono-* (downloaded at build time)
 embed_warpnine_mono = ["compile"]
-## assets/fonts/WarpnineMono/WarpnineSansCondensed-*
+## WarpnineSans-*, WarpnineSansCondensed-* (downloaded at build time)
 embed_warpnine_sans = ["compile"]
 ## all of the above
 embed_additional_fonts = [
     "embed_cmu_roman",
     "embed_ia_writer_duo",
+    "embed_jet_brains_mono_nl",
     "embed_noto_emoji",
     "embed_noto_sans_jp",
     "embed_noto_serif_jp",
