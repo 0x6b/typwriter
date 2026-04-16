@@ -36,6 +36,7 @@
 //! - `embed_additional_fonts`: embed all fonts listed below.
 //! - `embed_cmu_roman`: [Computer Modern Roman](https://www.fontsquirrel.com/fonts/computer-modern)
 //! - `embed_ia_writer_duo`: [iA Writer Duo](https://github.com/iaolo/iA-Fonts/)
+//! - `embed_jet_brains_mono_nl`: [JetBrains Mono NL](https://github.com/JetBrains/JetBrainsMono)
 //! - `embed_noto_emoji`: [Noto Emoji](https://fonts.google.com/noto/specimen/Noto+Emoji)
 //! - `embed_noto_sans_jp`: [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP)
 //! - `embed_noto_serif_jp`: [Noto Serif JP](https://fonts.google.com/noto/specimen/Noto+Serif+JP)

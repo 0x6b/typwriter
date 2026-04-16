@@ -106,24 +106,27 @@ watch = ["compile", "dep:axum", "dep:log", "dep:notify", "dep:open", "dep:tokio"
 embed_cmu_roman = ["compile"]
 ## assets/fonts/iAWriterDuo/iAWriterDuoS-*
 embed_ia_writer_duo = ["compile"]
+## JetBrainsMonoNL-* (downloaded at build time)
+embed_jet_brains_mono_nl = ["compile"]
 ## assets/fonts/NotoEmoji/NotoEmoji-VariableFont_wght.ttf
 embed_noto_emoji = ["compile"]
-## assets/fonts/NotoSansJP/NotoSansJP-*
+## NotoSansJP-* (downloaded at build time)
 embed_noto_sans_jp = ["compile"]
-## assets/fonts/NotoSerifJP/NotoSerifJP-*
+## NotoSerifJP-* (downloaded at build time)
 embed_noto_serif_jp = ["compile"]
-## assets/fonts/Recursive/recursive-static-OTFs.otc
+## recursive-static-OTFs.otc (downloaded at build time)
 embed_recursive = ["compile"]
 ## assets/fonts/SourceCodePro/SourceCodePro-*
 embed_source_code_pro = ["compile"]
-## assets/fonts/WarpnineMono/WarpnineMono-*
+## WarpnineMono-* (downloaded at build time)
 embed_warpnine_mono = ["compile"]
-## assets/fonts/WarpnineMono/WarpnineSansCondensed-*
+## WarpnineSans-*, WarpnineSansCondensed-* (downloaded at build time)
 embed_warpnine_sans = ["compile"]
 ## all of the above
 embed_additional_fonts = [
     "embed_cmu_roman",
     "embed_ia_writer_duo",
+    "embed_jet_brains_mono_nl",
     "embed_noto_emoji",
     "embed_noto_sans_jp",
     "embed_noto_serif_jp",

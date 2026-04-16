@@ -320,6 +320,42 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         )?;
     }
 
+    #[cfg(feature = "embed_jet_brains_mono_nl")]
+    {
+        let cache = cache_dir().join("JetBrainsMonoNL");
+        let files = [
+            "JetBrainsMonoNL-Bold.ttf",
+            "JetBrainsMonoNL-BoldItalic.ttf",
+            "JetBrainsMonoNL-ExtraBold.ttf",
+            "JetBrainsMonoNL-ExtraBoldItalic.ttf",
+            "JetBrainsMonoNL-ExtraLight.ttf",
+            "JetBrainsMonoNL-ExtraLightItalic.ttf",
+            "JetBrainsMonoNL-Italic.ttf",
+            "JetBrainsMonoNL-Light.ttf",
+            "JetBrainsMonoNL-LightItalic.ttf",
+            "JetBrainsMonoNL-Medium.ttf",
+            "JetBrainsMonoNL-MediumItalic.ttf",
+            "JetBrainsMonoNL-Regular.ttf",
+            "JetBrainsMonoNL-SemiBold.ttf",
+            "JetBrainsMonoNL-SemiBoldItalic.ttf",
+            "JetBrainsMonoNL-Thin.ttf",
+            "JetBrainsMonoNL-ThinItalic.ttf",
+        ];
+        let cached = cache.exists() && read_dir(&cache)?.next().is_some();
+        if cached {
+            println!("cargo::warning=Using cached fonts from {}", cache.display());
+        } else {
+            create_dir_all(&cache)?;
+            let base = "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/archives/ttf";
+            for file in &files {
+                let data = download(&format!("{base}/{file}"))?;
+                File::create(cache.join(file))?.write_all(&data)?;
+            }
+            println!("cargo::warning=Cached fonts to {}", cache.display());
+        }
+        generate_font_includes(&out_dir, "jet_brains_mono_nl", &cache, &files)?;
+    }
+
     #[cfg(feature = "embed_recursive")]
     {
         let font_dir = download_font(

@@ -123,6 +123,10 @@ impl FontSearcher {
         {
             add!("NotoEmoji/NotoEmoji-VariableFont_wght.ttf");
         }
+        #[cfg(feature = "embed_jet_brains_mono_nl")]
+        {
+            include!(concat!(env!("OUT_DIR"), "/embed_jet_brains_mono_nl.rs"));
+        }
         #[cfg(feature = "embed_noto_sans_jp")]
         {
             include!(concat!(env!("OUT_DIR"), "/embed_noto_sans_jp.rs"));
