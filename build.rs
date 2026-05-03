@@ -234,7 +234,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
     {
         let font_dir = download_font(
             "WarpnineFonts",
-            "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-01-11.1/warpnine-fonts-2026-01-11.1.zip",
+            "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-05-03.1/warpnine-fonts-2026-05-03.1.zip",
             ArchiveType::Zip,
         )?;
         generate_font_includes(
