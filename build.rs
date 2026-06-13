@@ -112,10 +112,10 @@ fn extract_zip(data: &[u8], dest: &Path) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-/// Downloads and caches a font archive if not already cached.
-/// Returns the path to the cached font directory.
+/// Downloads and caches a font archive (if not already cached), extracting it
+/// into a cache directory. Returns the path to that directory.
 #[allow(dead_code)]
-fn download_font(
+fn prepare_font_archive(
     name: &str,
     url: &str,
     archive_type: &ArchiveType,
@@ -167,30 +167,26 @@ fn generate_font_includes(
     Ok(())
 }
 
-/// Downloads and caches a single variable font file, then generates its embed
-/// include. The cache directory name doubles as the cached file's stem; using a
-/// fresh name guarantees a new download instead of reusing a stale static-font
-/// cache.
+/// Downloads and caches a single font file (if not already cached) into a cache
+/// directory named after `name`, stored as `<name>.ttf`. Returns the path to
+/// that directory. A fresh `name` guarantees a new download instead of reusing a
+/// stale cache (e.g. when replacing static instances with a variable font).
 #[allow(dead_code)]
-fn download_variable_font(
-    out_dir: &Path,
-    feature_name: &str,
-    name: &str,
-    url: &str,
-) -> Result<(), Box<dyn Error>> {
+fn prepare_font_file(name: &str, url: &str) -> Result<PathBuf, Box<dyn Error>> {
     let cache = cache_dir().join(name);
-    let file = format!("{name}.ttf");
-    let cached = cache.exists() && read_dir(&cache)?.next().is_some();
-    if cached {
+
+    // Check if already cached (directory exists and has files)
+    if cache.exists() && read_dir(&cache)?.next().is_some() {
         println!("cargo::warning=Using cached fonts from {}", cache.display());
-    } else {
-        create_dir_all(&cache)?;
-        let data = download(url)?;
-        File::create(cache.join(&file))?.write_all(&data)?;
-        println!("cargo::warning=Cached fonts to {}", cache.display());
+        return Ok(cache);
     }
-    generate_font_includes(out_dir, feature_name, &cache, &[file.as_str()])?;
-    Ok(())
+
+    create_dir_all(&cache)?;
+    let data = download(url)?;
+    File::create(cache.join(format!("{name}.ttf")))?.write_all(&data)?;
+
+    println!("cargo::warning=Cached fonts to {}", cache.display());
+    Ok(cache)
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -228,7 +224,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
     // Download and generate includes for large fonts based on features
     #[cfg(feature = "embed_warpnine_mono")]
     {
-        let font_dir = download_font(
+        let font_dir = prepare_font_archive(
             "WarpnineFonts",
             "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-01-11.1/warpnine-fonts-2026-01-11.1.zip",
             &ArchiveType::Zip,
@@ -260,7 +256,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
 
     #[cfg(feature = "embed_warpnine_sans")]
     {
-        let font_dir = download_font(
+        let font_dir = prepare_font_archive(
             "WarpnineFonts",
             "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-05-03.1/warpnine-fonts-2026-05-03.1.zip",
             &ArchiveType::Zip,
@@ -307,24 +303,22 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         // Single variable font (wght axis) sourced from Google Fonts, which
         // keeps the "Noto Sans JP" family name. Typst instantiates the
         // requested weight from the axis, replacing the former static instances.
-        download_variable_font(
-            &out_dir,
-            "noto_sans_jp",
+        let font_dir = prepare_font_file(
             "NotoSansJP-VF",
             "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf",
         )?;
+        generate_font_includes(&out_dir, "noto_sans_jp", &font_dir, &["NotoSansJP-VF.ttf"])?;
     }
 
     #[cfg(feature = "embed_noto_serif_jp")]
     {
         // Single variable font (wght axis) sourced from Google Fonts, which
         // keeps the "Noto Serif JP" family name.
-        download_variable_font(
-            &out_dir,
-            "noto_serif_jp",
+        let font_dir = prepare_font_file(
             "NotoSerifJP-VF",
             "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp/NotoSerifJP%5Bwght%5D.ttf",
         )?;
+        generate_font_includes(&out_dir, "noto_serif_jp", &font_dir, &["NotoSerifJP-VF.ttf"])?;
     }
 
     #[cfg(feature = "embed_jet_brains_mono_nl")]
@@ -365,7 +359,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
 
     #[cfg(feature = "embed_recursive")]
     {
-        let font_dir = download_font(
+        let font_dir = prepare_font_archive(
             "Recursive",
             "https://github.com/arrowtype/recursive/releases/download/v1.085/ArrowType-Recursive-1.085.zip",
             &ArchiveType::Zip,
