@@ -60,7 +60,7 @@ fn test_export_pdf(ctx: &TypwriterTestContext) -> Result<()> {
     let TypwriterTestContext { export_pdf: (out, params), .. } = ctx;
     assert!(compile(params).is_ok());
     assert!(out.exists());
-    assert_eq!(out.sha256()?, "59685271daa01489a58b3521854d547b11b892308a8fc052120e25c501312a48");
+    assert_eq!(out.sha256()?, "55ba71b9ba68cabb37c2abab88ac64f81cbcb1b80fe73f49224704e826ee79d4");
 
     remove_file(out)?;
     Ok(())
@@ -72,7 +72,7 @@ fn test_export_png(ctx: &TypwriterTestContext) -> Result<()> {
     let TypwriterTestContext { export_png: (out, params), .. } = ctx;
     assert!(compile(params).is_ok());
     assert!(out.exists());
-    assert_eq!(out.sha256()?, "4431b5b28132b5def1074ad20a06a81b80938ab1fe5b32e5ae559d04d16c5c42");
+    assert_eq!(out.sha256()?, "ddf4045f6005ed586ce248af36ef5ce02212c145a4fae4a51b0d71c5011d1ade");
 
     remove_file(out)?;
     Ok(())

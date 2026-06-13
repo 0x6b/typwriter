@@ -167,6 +167,32 @@ fn generate_font_includes(
     Ok(())
 }
 
+/// Downloads and caches a single variable font file, then generates its embed
+/// include. The cache directory name doubles as the cached file's stem; using a
+/// fresh name guarantees a new download instead of reusing a stale static-font
+/// cache.
+#[allow(dead_code)]
+fn download_variable_font(
+    out_dir: &Path,
+    feature_name: &str,
+    name: &str,
+    url: &str,
+) -> Result<(), Box<dyn Error>> {
+    let cache = cache_dir().join(name);
+    let file = format!("{name}.ttf");
+    let cached = cache.exists() && read_dir(&cache)?.next().is_some();
+    if cached {
+        println!("cargo::warning=Using cached fonts from {}", cache.display());
+    } else {
+        create_dir_all(&cache)?;
+        let data = download(url)?;
+        File::create(cache.join(&file))?.write_all(&data)?;
+        println!("cargo::warning=Cached fonts to {}", cache.display());
+    }
+    generate_font_includes(out_dir, feature_name, &cache, &[file.as_str()])?;
+    Ok(())
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let out_dir = PathBuf::from(var("OUT_DIR")?);
 
@@ -278,47 +304,26 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
 
     #[cfg(feature = "embed_noto_sans_jp")]
     {
-        let font_dir = download_font(
-            "NotoSansJP",
-            "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/16_NotoSansJP.zip",
-            &ArchiveType::Zip,
-        )?;
-        generate_font_includes(
+        // Single variable font (wght axis) sourced from Google Fonts, which
+        // keeps the "Noto Sans JP" family name. Typst instantiates the
+        // requested weight from the axis, replacing the former static instances.
+        download_variable_font(
             &out_dir,
             "noto_sans_jp",
-            &font_dir,
-            &[
-                "NotoSansJP-Black.otf",
-                "NotoSansJP-Bold.otf",
-                "NotoSansJP-DemiLight.otf",
-                "NotoSansJP-Light.otf",
-                "NotoSansJP-Medium.otf",
-                "NotoSansJP-Regular.otf",
-                "NotoSansJP-Thin.otf",
-            ],
+            "NotoSansJP-VF",
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf",
         )?;
     }
 
     #[cfg(feature = "embed_noto_serif_jp")]
     {
-        let font_dir = download_font(
-            "NotoSerifJP",
-            "https://github.com/notofonts/noto-cjk/releases/download/Serif2.003/12_NotoSerifJP.zip",
-            &ArchiveType::Zip,
-        )?;
-        generate_font_includes(
+        // Single variable font (wght axis) sourced from Google Fonts, which
+        // keeps the "Noto Serif JP" family name.
+        download_variable_font(
             &out_dir,
             "noto_serif_jp",
-            &font_dir,
-            &[
-                "NotoSerifJP-Black.otf",
-                "NotoSerifJP-Bold.otf",
-                "NotoSerifJP-ExtraLight.otf",
-                "NotoSerifJP-Light.otf",
-                "NotoSerifJP-Medium.otf",
-                "NotoSerifJP-Regular.otf",
-                "NotoSerifJP-SemiBold.otf",
-            ],
+            "NotoSerifJP-VF",
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp/NotoSerifJP%5Bwght%5D.ttf",
         )?;
     }
 
