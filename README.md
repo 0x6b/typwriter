@@ -133,14 +133,14 @@ You can embed additional fonts in the binary for easier deployment. Each feature
 - `embed_additional_fonts`: embed all fonts listed below.
 - `embed_cmu_roman`: [Computer Modern Roman](https://www.fontsquirrel.com/fonts/computer-modern)
 - `embed_ia_writer_duo`: [iA Writer Duo](https://github.com/iaolo/iA-Fonts/)
-- `embed_jet_brains_mono_nl`: [JetBrains Mono NL](https://github.com/JetBrains/JetBrainsMono) ([OFL](https://github.com/JetBrains/JetBrainsMono/blob/master/OFL.txt))
+- `embed_jet_brains_mono_nl`: [JetBrains Mono NL](https://github.com/JetBrains/JetBrainsMono)
 - `embed_noto_emoji`: [Noto Emoji](https://fonts.google.com/noto/specimen/Noto+Emoji)
 - `embed_noto_sans_jp`: [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP)
 - `embed_noto_serif_jp`: [Noto Serif JP](https://fonts.google.com/noto/specimen/Noto+Serif+JP)
 - `embed_recursive`: [Recursive Sans & Mono](https://github.com/arrowtype/recursive/)
 - `embed_source_code_pro`: [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)
-- `embed_warpnine_mono`: [WarpNine Mono](https://github.com/0x6b/warpnine-fonts/)
-- `embed_warpnine_sans`: [WarpNine Sans](https://github.com/0x6b/warpnine-fonts/)
+- `embed_warpnine_mono`: [Warpnine Mono](https://github.com/0x6b/warpnine-fonts/)
+- `embed_warpnine_sans`: [Warpnine Sans](https://github.com/0x6b/warpnine-fonts/)
 
 > [!Note]
 > typst-cli [defaults](https://github.com/typst/typst-assets/blob/v0.14.2/src/lib.rs#L104-L120) are always embedded.
