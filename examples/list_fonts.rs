@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-use typwriter::list_fonts;
+use typwriter::{CompileParams, list_fonts};
 
 fn main() {
-    let params = typwriter::CompileParams {
+    let params = CompileParams {
         input: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("examples")
             .join("sample.typ"),

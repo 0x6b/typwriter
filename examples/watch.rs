@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
 use tokio::runtime::Runtime;
-use typwriter::{FittingType, watch};
+use typwriter::{CompileParams, FittingType, watch};
 
 fn main() {
     let rt = Runtime::new().unwrap();
-    let params = typwriter::CompileParams {
+    let params = CompileParams {
         input: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("examples")
             .join("sample.typ"),

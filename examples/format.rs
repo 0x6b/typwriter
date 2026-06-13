@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-use typwriter::format;
+use typwriter::{FormatParams, format};
 
 fn main() {
-    let params = typwriter::FormatParams {
+    let params = FormatParams {
         input: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("examples")
             .join("sample.typ"),

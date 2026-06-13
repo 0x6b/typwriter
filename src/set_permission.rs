@@ -1,10 +1,11 @@
 use std::{
+    convert::Into,
     error::Error,
     fmt::{Display, Formatter},
     path::PathBuf,
 };
 
-use qpdf::{EncryptionParams, EncryptionParamsR6, writer};
+use qpdf::{EncryptionParams, EncryptionParamsR6, QPdf, writer};
 use serde::{Deserialize, Serialize};
 
 /// Parameters for PDF permission.
@@ -181,10 +182,10 @@ pub fn set_permission(
     if input == output {
         return Err("in-place update is not possible".into());
     }
-    qpdf::QPdf::read(input)
+    QPdf::read(input)
         .unwrap()
         .writer()
         .encryption_params(params.into())
         .write(output)
-        .map_err(|e| e.into())
+        .map_err(Into::into)
 }

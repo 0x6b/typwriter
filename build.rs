@@ -42,8 +42,10 @@ pub struct Typst {
 #[allow(dead_code)]
 fn cache_dir() -> PathBuf {
     var("XDG_CACHE_HOME")
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| dirs::cache_dir().unwrap_or_else(|| PathBuf::from(".cache")))
+        .map_or_else(
+            |_| dirs::cache_dir().unwrap_or_else(|| PathBuf::from(".cache")),
+            PathBuf::from,
+        )
         .join("typwriter")
         .join("fonts")
 }
@@ -116,7 +118,7 @@ fn extract_zip(data: &[u8], dest: &Path) -> Result<(), Box<dyn Error>> {
 fn download_font(
     name: &str,
     url: &str,
-    archive_type: ArchiveType,
+    archive_type: &ArchiveType,
 ) -> Result<PathBuf, Box<dyn Error>> {
     let cache = cache_dir().join(name);
 
@@ -203,7 +205,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         let font_dir = download_font(
             "WarpnineFonts",
             "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-01-11.1/warpnine-fonts-2026-01-11.1.zip",
-            ArchiveType::Zip,
+            &ArchiveType::Zip,
         )?;
         generate_font_includes(
             &out_dir,
@@ -235,7 +237,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         let font_dir = download_font(
             "WarpnineFonts",
             "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-05-03.1/warpnine-fonts-2026-05-03.1.zip",
-            ArchiveType::Zip,
+            &ArchiveType::Zip,
         )?;
         generate_font_includes(
             &out_dir,
@@ -279,7 +281,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         let font_dir = download_font(
             "NotoSansJP",
             "https://github.com/notofonts/noto-cjk/releases/download/Sans2.004/16_NotoSansJP.zip",
-            ArchiveType::Zip,
+            &ArchiveType::Zip,
         )?;
         generate_font_includes(
             &out_dir,
@@ -302,7 +304,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         let font_dir = download_font(
             "NotoSerifJP",
             "https://github.com/notofonts/noto-cjk/releases/download/Serif2.003/12_NotoSerifJP.zip",
-            ArchiveType::Zip,
+            &ArchiveType::Zip,
         )?;
         generate_font_includes(
             &out_dir,
@@ -361,7 +363,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         let font_dir = download_font(
             "Recursive",
             "https://github.com/arrowtype/recursive/releases/download/v1.085/ArrowType-Recursive-1.085.zip",
-            ArchiveType::Zip,
+            &ArchiveType::Zip,
         )?;
         generate_font_includes(&out_dir, "recursive", &font_dir, &["recursive-static-OTFs.otc"])?;
     }
