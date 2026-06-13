@@ -145,22 +145,33 @@ enum ArchiveType {
     Zip,
 }
 
-/// Generates an include file for embedding fonts from a directory.
+/// Writes an embed include for the named files within a single directory.
 #[allow(dead_code)]
-fn generate_font_includes(
+fn write_font_includes_in_dir(
     out_dir: &Path,
     feature_name: &str,
     font_dir: &Path,
     files: &[&str],
 ) -> Result<(), Box<dyn Error>> {
+    let paths: Vec<PathBuf> = files.iter().map(|file| font_dir.join(file)).collect();
+    write_font_includes(out_dir, feature_name, &paths)
+}
+
+/// Writes an embed include emitting one `process(include_bytes!(..))` call per
+/// font file path. Used directly when a feature's files live in more than one
+/// cache directory.
+#[allow(dead_code)]
+fn write_font_includes(
+    out_dir: &Path,
+    feature_name: &str,
+    paths: &[PathBuf],
+) -> Result<(), Box<dyn Error>> {
     let include_file = out_dir.join(format!("embed_{feature_name}.rs"));
     let mut f = File::create(&include_file)?;
 
     writeln!(f, "{{")?;
-    for file in files {
-        let font_path = font_dir.join(file);
-        let path_str = font_path.display();
-        writeln!(f, "    process(include_bytes!(\"{path_str}\"));")?;
+    for path in paths {
+        writeln!(f, "    process(include_bytes!(\"{}\"));", path.display())?;
     }
     writeln!(f, "}}")?;
 
@@ -224,76 +235,32 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
     // Download and generate includes for large fonts based on features
     #[cfg(feature = "embed_warpnine_mono")]
     {
-        let font_dir = prepare_font_archive(
-            "WarpnineFonts",
-            "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-01-11.1/warpnine-fonts-2026-01-11.1.zip",
-            &ArchiveType::Zip,
+        // Single variable font (wght + ital axes), family "Warpnine Mono".
+        // Note: this file carries full CJK coverage and is large (~100 MB).
+        let font_dir = prepare_font_file(
+            "WarpnineMono-VF",
+            "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-06-13.1/WarpnineMono-VF.ttf",
         )?;
-        generate_font_includes(
-            &out_dir,
-            "warpnine_mono",
-            &font_dir,
-            &[
-                "WarpnineMono-Black.ttf",
-                "WarpnineMono-BlackItalic.ttf",
-                "WarpnineMono-Bold.ttf",
-                "WarpnineMono-BoldItalic.ttf",
-                "WarpnineMono-ExtraBlack.ttf",
-                "WarpnineMono-ExtraBlackItalic.ttf",
-                "WarpnineMono-ExtraBold.ttf",
-                "WarpnineMono-ExtraBoldItalic.ttf",
-                "WarpnineMono-Italic.ttf",
-                "WarpnineMono-Light.ttf",
-                "WarpnineMono-LightItalic.ttf",
-                "WarpnineMono-Medium.ttf",
-                "WarpnineMono-MediumItalic.ttf",
-                "WarpnineMono-Regular.ttf",
-                "WarpnineMono-SemiBold.ttf",
-                "WarpnineMono-SemiBoldItalic.ttf",
-            ],
-        )?;
+        write_font_includes_in_dir(&out_dir, "warpnine_mono", &font_dir, &["WarpnineMono-VF.ttf"])?;
     }
 
     #[cfg(feature = "embed_warpnine_sans")]
     {
-        let font_dir = prepare_font_archive(
-            "WarpnineFonts",
-            "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-05-03.1/warpnine-fonts-2026-05-03.1.zip",
-            &ArchiveType::Zip,
+        // Two variable fonts (wght + ital axes): families "Warpnine Sans" and
+        // "Warpnine Sans Condensed". They are separate downloads, so the include
+        // is written from both cache directories.
+        const BASE: &str = "https://github.com/0x6b/warpnine-fonts/releases/download/v2026-06-13.1";
+        let sans = prepare_font_file("WarpnineSans-VF", &format!("{BASE}/WarpnineSans-VF.ttf"))?;
+        let condensed = prepare_font_file(
+            "WarpnineSansCondensed-VF",
+            &format!("{BASE}/WarpnineSansCondensed-VF.ttf"),
         )?;
-        generate_font_includes(
+        write_font_includes(
             &out_dir,
             "warpnine_sans",
-            &font_dir,
             &[
-                "WarpnineSans-Black.ttf",
-                "WarpnineSans-BlackItalic.ttf",
-                "WarpnineSans-Bold.ttf",
-                "WarpnineSans-BoldItalic.ttf",
-                "WarpnineSans-ExtraBold.ttf",
-                "WarpnineSans-ExtraBoldItalic.ttf",
-                "WarpnineSans-Italic.ttf",
-                "WarpnineSans-Light.ttf",
-                "WarpnineSans-LightItalic.ttf",
-                "WarpnineSans-Medium.ttf",
-                "WarpnineSans-MediumItalic.ttf",
-                "WarpnineSans-Regular.ttf",
-                "WarpnineSans-SemiBold.ttf",
-                "WarpnineSans-SemiBoldItalic.ttf",
-                "WarpnineSansCondensed-Black.ttf",
-                "WarpnineSansCondensed-BlackItalic.ttf",
-                "WarpnineSansCondensed-Bold.ttf",
-                "WarpnineSansCondensed-BoldItalic.ttf",
-                "WarpnineSansCondensed-ExtraBold.ttf",
-                "WarpnineSansCondensed-ExtraBoldItalic.ttf",
-                "WarpnineSansCondensed-Italic.ttf",
-                "WarpnineSansCondensed-Light.ttf",
-                "WarpnineSansCondensed-LightItalic.ttf",
-                "WarpnineSansCondensed-Medium.ttf",
-                "WarpnineSansCondensed-MediumItalic.ttf",
-                "WarpnineSansCondensed-Regular.ttf",
-                "WarpnineSansCondensed-SemiBold.ttf",
-                "WarpnineSansCondensed-SemiBoldItalic.ttf",
+                sans.join("WarpnineSans-VF.ttf"),
+                condensed.join("WarpnineSansCondensed-VF.ttf"),
             ],
         )?;
     }
@@ -307,7 +274,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
             "NotoSansJP-VF",
             "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf",
         )?;
-        generate_font_includes(&out_dir, "noto_sans_jp", &font_dir, &["NotoSansJP-VF.ttf"])?;
+        write_font_includes_in_dir(&out_dir, "noto_sans_jp", &font_dir, &["NotoSansJP-VF.ttf"])?;
     }
 
     #[cfg(feature = "embed_noto_serif_jp")]
@@ -318,7 +285,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
             "NotoSerifJP-VF",
             "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp/NotoSerifJP%5Bwght%5D.ttf",
         )?;
-        generate_font_includes(&out_dir, "noto_serif_jp", &font_dir, &["NotoSerifJP-VF.ttf"])?;
+        write_font_includes_in_dir(&out_dir, "noto_serif_jp", &font_dir, &["NotoSerifJP-VF.ttf"])?;
     }
 
     #[cfg(feature = "embed_jet_brains_mono_nl")]
@@ -354,7 +321,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
             }
             println!("cargo::warning=Cached fonts to {}", cache.display());
         }
-        generate_font_includes(&out_dir, "jet_brains_mono_nl", &cache, &files)?;
+        write_font_includes_in_dir(&out_dir, "jet_brains_mono_nl", &cache, &files)?;
     }
 
     #[cfg(feature = "embed_recursive")]
@@ -364,7 +331,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
             "https://github.com/arrowtype/recursive/releases/download/v1.085/ArrowType-Recursive-1.085.zip",
             &ArchiveType::Zip,
         )?;
-        generate_font_includes(&out_dir, "recursive", &font_dir, &["recursive-static-OTFs.otc"])?;
+        write_font_includes_in_dir(&out_dir, "recursive", &font_dir, &["recursive-static-OTFs.otc"])?;
     }
 
     Ok(())
