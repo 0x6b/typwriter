@@ -83,22 +83,10 @@ fn add_embedded(store: &mut FontStore) {
     }
     #[cfg(feature = "embed_source_code_pro")]
     {
-        add!("SourceCodePro/SourceCodePro-Black.ttf");
-        add!("SourceCodePro/SourceCodePro-BlackItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-Bold.ttf");
-        add!("SourceCodePro/SourceCodePro-BoldItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-ExtraBold.ttf");
-        add!("SourceCodePro/SourceCodePro-ExtraBoldItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-ExtraLight.ttf");
-        add!("SourceCodePro/SourceCodePro-ExtraLightItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-Italic.ttf");
-        add!("SourceCodePro/SourceCodePro-Light.ttf");
-        add!("SourceCodePro/SourceCodePro-LightItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-Medium.ttf");
-        add!("SourceCodePro/SourceCodePro-MediumItalic.ttf");
-        add!("SourceCodePro/SourceCodePro-Regular.ttf");
-        add!("SourceCodePro/SourceCodePro-SemiBold.ttf");
-        add!("SourceCodePro/SourceCodePro-SemiBoldItalic.ttf");
+        // Variable fonts (wght axis) replace the former static instances; one
+        // file each for upright and italic. Family name stays "Source Code Pro".
+        add!("SourceCodePro/SourceCodePro-VF.ttf");
+        add!("SourceCodePro/SourceCodePro-Italic-VF.ttf");
     }
     #[cfg(feature = "embed_warpnine_mono")]
     {
