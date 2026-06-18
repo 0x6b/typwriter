@@ -18,8 +18,8 @@ cargo add typwriter --fatures full
 
 The crate may function in other environments, but it has only been tested in the following environment:
 
-- rustc 1.92.0 (ded5c06cf 2025-12-08)
-- macOS Tahoe 26.1 (25B78)
+- rustc 1.96.0 (ac68faa20 2026-05-25)
+- macOS Tahoe 26.5.1 (25F80)
 
 ## Supported Typst Version
 
