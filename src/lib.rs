@@ -13,7 +13,7 @@
 //!
 //! # Supported Typst Version
 //!
-//! Version [0.15.0-rc.1](https://github.com/typst/typst/releases/tag/v0.15.0-rc.1)
+//! Version [0.15.0](https://github.com/typst/typst/releases/tag/v0.15.0)
 //!
 //! This crate is for my personal use and Typst/Rust learning purposes; it is not affiliated with the [Typst](https://typst.app/) project.
 //!
