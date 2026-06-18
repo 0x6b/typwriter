@@ -60,7 +60,7 @@ fn test_export_pdf(ctx: &TypwriterTestContext) -> Result<()> {
     let TypwriterTestContext { export_pdf: (out, params), .. } = ctx;
     assert!(compile(params).is_ok());
     assert!(out.exists());
-    assert_eq!(out.sha256()?, "09b1cc9a6166085106a17d62b205cb14dbd40545a3748b0af65ba3549e9078c6");
+    assert_eq!(out.sha256()?, "35cbd3557d5868b1ecc8eb589fefac5ce2162cccb56bfe0b4dbc02e924d776fd");
 
     remove_file(out)?;
     Ok(())
@@ -72,7 +72,7 @@ fn test_export_png(ctx: &TypwriterTestContext) -> Result<()> {
     let TypwriterTestContext { export_png: (out, params), .. } = ctx;
     assert!(compile(params).is_ok());
     assert!(out.exists());
-    assert_eq!(out.sha256()?, "e85d025fb607d8ab3f15185e45ba051639273fc31e1cfc3833bf2e3e8293d8f4");
+    assert_eq!(out.sha256()?, "ddf4045f6005ed586ce248af36ef5ce02212c145a4fae4a51b0d71c5011d1ade");
 
     remove_file(out)?;
     Ok(())
@@ -173,7 +173,7 @@ fn test_format(ctx: &TypwriterTestContext) -> Result<()> {
 
 #[test]
 fn test_typst_version() -> Result<()> {
-    assert_eq!(typst_version(), "0.14.2");
+    assert_eq!(typst_version(), "0.15.0");
 
     Ok(())
 }

@@ -2,7 +2,7 @@ use std::{
     error::Error,
     fs,
     path::{Path, PathBuf},
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 use ecow::eco_format;
@@ -11,10 +11,11 @@ use output_template::{format, has_indexable_template};
 use typst::{
     diag::{At, SourceResult, Warned},
     foundations::Smart,
-    layout::PagedDocument,
+    utils::Scalar,
 };
+use typst_layout::PagedDocument;
 use typst_pdf::{PdfOptions, PdfStandard as TypstPdfStandard, PdfStandards, pdf};
-use typst_render::render;
+use typst_render::{RenderOptions, render};
 use typst_syntax::Span;
 
 use crate::world::SystemWorld;
@@ -159,14 +160,14 @@ pub fn compile(params: &CompileParams) -> Result<Duration, Box<dyn Error>> {
     let world = SystemWorld::new(
         &params.input,
         &params.font_paths,
-        params.dict.clone(),
+        &params.dict.clone(),
         &params.package_path,
         &params.package_cache_path,
     )
     .map_err(|err| err.to_string())?;
-    let start = std::time::Instant::now();
+    let start = Instant::now();
 
-    let Warned { output, warnings } = typst::compile(&world);
+    let Warned { output, warnings } = typst::compile::<PagedDocument>(&world);
     let result = output.and_then(|document| export(&document, params));
 
     match result {
@@ -182,7 +183,7 @@ pub fn compile(params: &CompileParams) -> Result<Duration, Box<dyn Error>> {
                     diagnostic
                         .hints
                         .iter()
-                        .map(|e| format!("hint: {e}"))
+                        .map(|e| format!("hint: {}", e.v))
                         .collect::<Vec<String>>()
                         .join("\n")
                 )
@@ -206,19 +207,25 @@ fn export_image(document: &PagedDocument, params: &CompileParams) -> SourceResul
     let output = &params.output.to_str().unwrap_or_default();
     let can_handle_multiple = has_indexable_template(output);
 
-    if !can_handle_multiple && document.pages.len() > 1 {
+    if !can_handle_multiple && document.pages().len() > 1 {
         panic!("{}", "cannot export multiple images without `{{n}}` in output path");
     }
 
-    document.pages.iter().enumerate().for_each(|(i, page)| {
+    document.pages().iter().enumerate().for_each(|(i, page)| {
         let storage;
         let path = if can_handle_multiple {
-            storage = format(output, i + 1, document.pages.len());
+            storage = format(output, i + 1, document.pages().len());
             Path::new(&storage)
         } else {
             params.output.as_path()
         };
-        let pixmap = render(page, params.ppi.unwrap_or(144.0) / 72.0);
+        let pixmap = render(
+            page,
+            &RenderOptions {
+                pixel_per_pt: Scalar::new(f64::from(params.ppi.unwrap_or(144.0) / 72.0)),
+                render_bleed: false,
+            },
+        );
         let buf = pixmap.encode_png().unwrap();
         write(path, buf).unwrap();
     });
@@ -232,17 +239,19 @@ fn export_pdf(document: &PagedDocument, params: &CompileParams) -> SourceResult<
         Some(list) => {
             let typst_standards: Vec<TypstPdfStandard> = list.iter().map(|s| (*s).into()).collect();
             PdfStandards::new(&typst_standards)
-                .map_err(|err| eco_format!("invalid PDF standards: {err}"))
+                .map_err(|err| eco_format!("invalid PDF standards: {}", err.message()))
                 .at(Span::detached())?
         }
         None => PdfStandards::default(),
     };
     let options = PdfOptions {
         ident: Smart::Auto,
+        creator: Smart::Auto,
         timestamp: None,
         page_ranges: None,
         standards,
         tagged: true,
+        pretty: false,
     };
     write(&params.output, pdf(document, &options)?)
         .map_err(|err| eco_format!("failed to write PDF: {err}"))

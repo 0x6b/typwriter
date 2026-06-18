@@ -1,5 +1,6 @@
-use std::{collections::HashMap, path::Path};
+use std::{collections::HashMap, error::Error, path::Path};
 
+use chrono::Local;
 use lopdf::{Dictionary, Document, Object, Stream, text_string};
 use serde::{Deserialize, Serialize};
 use xmp_writer::{DateTime, LangId, XmpWriter};
@@ -57,14 +58,14 @@ pub struct PdfMetadata {
 impl Default for PdfMetadata {
     fn default() -> Self {
         Self {
-            title: "".to_string(),
-            author: "".to_string(),
+            title: String::new(),
+            author: String::new(),
             application: "typwriter".to_string(),
-            subject: "".to_string(),
+            subject: String::new(),
             copyright_status: true,
             copyright_notice: format!(
                 "© {} Author. All rights reserved.",
-                chrono::Local::now().format("%Y")
+                Local::now().format("%Y")
             ),
             keywords: vec![],
             language: "en".to_string(),
@@ -133,10 +134,7 @@ impl Default for PdfMetadata {
 ///
 /// typwriter::update_metadata(&output, &metadata).unwrap();
 /// ```
-pub fn update_metadata(
-    path: &Path,
-    metadata: &PdfMetadata,
-) -> Result<(), Box<dyn std::error::Error>> {
+pub fn update_metadata(path: &Path, metadata: &PdfMetadata) -> Result<(), Box<dyn Error>> {
     let mut doc = Document::load(path)?;
 
     // Extract existing PDF/UA conformance before overwriting
@@ -198,7 +196,7 @@ fn generate_xmp(metadata: &PdfMetadata, pdfua_part: Option<i32>) -> String {
 
     // XMP Basic
     xmp.creator_tool(&metadata.application);
-    let now = chrono::Local::now();
+    let now = Local::now();
     let date = DateTime::date(
         now.format("%Y").to_string().parse().unwrap_or(2024),
         now.format("%m").to_string().parse().unwrap_or(1),
@@ -223,10 +221,7 @@ fn generate_xmp(metadata: &PdfMetadata, pdfua_part: Option<i32>) -> String {
 }
 
 /// Find and update the XMP metadata stream in the PDF document
-fn update_xmp_stream(
-    doc: &mut Document,
-    xmp_string: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
+fn update_xmp_stream(doc: &mut Document, xmp_string: &str) -> Result<(), Box<dyn Error>> {
     // Get the catalog ObjectId from the trailer
     let catalog_id = doc.trailer.get(b"Root")?.as_reference()?;
 
@@ -234,16 +229,17 @@ fn update_xmp_stream(
     {
         let catalog = doc.catalog()?;
         if let Ok(metadata_ref) = catalog.get(b"Metadata")
-            && let Ok(metadata_id) = metadata_ref.as_reference() {
-                // Update existing metadata stream
-                if let Ok(Object::Stream(stream)) = doc.get_object_mut(metadata_id) {
-                    stream.set_plain_content(xmp_string.as_bytes().to_vec());
-                    stream.dict.set("Length", xmp_string.len() as i64);
-                    // Remove any compression filter for XMP
-                    stream.dict.remove(b"Filter");
-                    return Ok(());
-                }
+            && let Ok(metadata_id) = metadata_ref.as_reference()
+        {
+            // Update existing metadata stream
+            if let Ok(Object::Stream(stream)) = doc.get_object_mut(metadata_id) {
+                stream.set_plain_content(xmp_string.as_bytes().to_vec());
+                stream.dict.set("Length", xmp_string.len() as i64);
+                // Remove any compression filter for XMP
+                stream.dict.remove(b"Filter");
+                return Ok(());
             }
+        }
     }
 
     // No existing metadata stream found, create a new one
@@ -274,7 +270,7 @@ fn update_info_dict(doc: &mut Document, metadata: &PdfMetadata) {
     dict.set("Author", text_string(&metadata.author));
     dict.set("Producer", text_string(&metadata.application));
     dict.set("Creator", text_string(&metadata.application));
-    let now = chrono::Local::now().format("%Y%m%d").to_string();
+    let now = Local::now().format("%Y%m%d").to_string();
     dict.set("CreationDate", text_string(&now));
     dict.set("ModDate", text_string(&now));
     dict.set("Keywords", text_string(&metadata.keywords.join(", ")));

@@ -125,7 +125,7 @@ pub async fn watch(
 
     match compile(&params) {
         Ok(duration) => {
-            info!("Initial compilation succeeded in {duration:?}. Watching for changes...")
+            info!("Initial compilation succeeded in {duration:?}. Watching for changes...");
         }
         Err(why) => error!("{why}"),
     }
@@ -152,12 +152,12 @@ pub async fn watch(
     if open {
         if let Some(app) = app {
             match with_detached(format!("http://{}:{}", state.address, state.port), app) {
-                Ok(_) => info!("Opened in default browser"),
+                Ok(()) => info!("Opened in default browser"),
                 Err(why) => error!("{why}"),
             }
         } else {
             match that_detached(format!("http://{}:{}", state.address, state.port)) {
-                Ok(_) => info!("Opened in default browser"),
+                Ok(()) => info!("Opened in default browser"),
                 Err(why) => error!("{why}"),
             }
         }
@@ -199,7 +199,7 @@ pub async fn watch(
                     }
                     state_stdin.changed.notify_one();
                 }
-                _ = state_stdin.shutdown.notified() => {
+                () = state_stdin.shutdown.notified() => {
                     break;
                 }
             }
@@ -225,7 +225,7 @@ pub async fn watch(
                     Ok(duration) => info!("compilation succeeded in {duration:?}"),
                     Err(why) => error!("{why}"),
                 }
-                state.changed.notify_one()
+                state.changed.notify_one();
             }
         }
         Err(e) => error!("watch error: {e:?}"),
@@ -235,7 +235,7 @@ pub async fn watch(
 
     select! {
         _ = server => {}
-        _ = state_selector.shutdown.notified() => {
+        () = state_selector.shutdown.notified() => {
             info!("Shutting down...");
             watcher.unwatch(input.parent().unwrap())?;
             remove_file(&state_selector.output)?;
@@ -300,7 +300,6 @@ pub enum FittingType {
 impl From<&str> for FittingType {
     fn from(value: &str) -> Self {
         match value {
-            "page" => FittingType::Page,
             "width" => FittingType::Width,
             "height" => FittingType::Height,
             _ => FittingType::Page,

@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, path::PathBuf};
+use std::{error::Error, fs::read_to_string, path::PathBuf};
 
 use typstyle_core::{Config, Typstyle};
 
@@ -42,7 +42,7 @@ pub struct FormatParams {
 ///
 /// println!("{}", typwriter::format(&params).map_or_else(|why| why.to_string(), |s| s));
 /// ```
-pub fn format(params: &FormatParams) -> Result<String, Box<dyn std::error::Error>> {
+pub fn format(params: &FormatParams) -> Result<String, Box<dyn Error>> {
     let config = Config::new()
         .with_width(params.column)
         .with_tab_spaces(params.tab_spaces);

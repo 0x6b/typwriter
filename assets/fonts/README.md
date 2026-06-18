@@ -4,7 +4,7 @@ Fonts under this directory are licensed under its own license. See the respectiv
 | --------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
 | [Computer Modern Roman](https://www.fontsquirrel.com/fonts/computer-modern) | `ComputerModern/cmunrm.ttf`                 | [LICENSE](ComputerModern/SIL%20Open%20Font%20License.txt) |
 | [Noto Emoji](https://fonts.google.com/noto/specimen/Noto+Emoji)             | `NotoEmoji/NotoEmoji-VariableFont_wght.ttf` | [LICENSE](NotoEmoji/OFL.txt)                              |
-| [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)        | `SourceCodePro/SourceCodePro-*.ttf`         | [LICENSE](SourceCodePro/OFL.txt)                          |
+| [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)        | `SourceCodePro/SourceCodePro*-VF.ttf`       | [LICENSE](SourceCodePro/OFL.txt)                          |
 | [iA Writer Duo](https://github.com/iaolo/iA-Fonts/)                         | `iAWriterDuo/iAWriterDuoS-*.ttf`            | [LICENSE](iAWriterDuo/LICENSE.md)                         |
 
 The following fonts are downloaded at build time when their respective feature is enabled:

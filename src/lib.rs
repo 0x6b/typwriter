@@ -13,7 +13,7 @@
 //!
 //! # Supported Typst Version
 //!
-//! Version [0.14.2](https://github.com/typst/typst/releases/tag/v0.14.2) (December 3, 2025)
+//! Version [0.15.0](https://github.com/typst/typst/releases/tag/v0.15.0)
 //!
 //! This crate is for my personal use and Typst/Rust learning purposes; it is not affiliated with the [Typst](https://typst.app/) project.
 //!
@@ -71,13 +71,9 @@ pub use watch::watch;
 #[cfg(feature = "compile")]
 mod compile;
 #[cfg(feature = "compile")]
-mod download;
-#[cfg(feature = "compile")]
 mod fonts;
 #[cfg(feature = "format")]
 mod format;
-#[cfg(feature = "compile")]
-mod package;
 #[cfg(feature = "pdf_permission")]
 mod set_permission;
 #[cfg(feature = "pdf_metadata")]
