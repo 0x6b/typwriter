@@ -258,10 +258,7 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
         write_font_includes(
             &out_dir,
             "warpnine_sans",
-            &[
-                sans.join("WarpnineSans-VF.ttf"),
-                condensed.join("WarpnineSansCondensed-VF.ttf"),
-            ],
+            &[sans.join("WarpnineSans-VF.ttf"), condensed.join("WarpnineSansCondensed-VF.ttf")],
         )?;
     }
 
@@ -331,7 +328,12 @@ pub fn typst_version() -> &'static str {{ "{typst_version}" }}
             "https://github.com/arrowtype/recursive/releases/download/v1.085/ArrowType-Recursive-1.085.zip",
             &ArchiveType::Zip,
         )?;
-        write_font_includes_in_dir(&out_dir, "recursive", &font_dir, &["recursive-static-OTFs.otc"])?;
+        write_font_includes_in_dir(
+            &out_dir,
+            "recursive",
+            &font_dir,
+            &["recursive-static-OTFs.otc"],
+        )?;
     }
 
     Ok(())
