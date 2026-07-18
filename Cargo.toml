@@ -1,7 +1,7 @@
 [package]
 name = "typwriter"
 description = "A Rust library for compiling, formatting, and watching Typst documents, with PDF metadata and permission management."
-version = "0.15.1"
+version = "0.15.2"
 edition = "2024"
 authors = ["kaoru <k@warpnine.io>"]
 license = "Apache-2.0"
@@ -21,21 +21,15 @@ path = "src/lib.rs"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"], optional = true }
 ecow = { version = "0.2", features = ["serde"], optional = true }
 parking_lot = "0.12"
-typst = { version = "0.15.0", optional = true }
-typst-assets = { version = "0.15.0", features = ["fonts"], optional = true }
-typst-kit = { version = "0.15.0", default-features = false, features = [
-    "embedded-fonts",
-    "scan-fonts",
-    "system-files",
-    "system-downloader",
-    "datetime",
-], optional = true }
-typst-layout = { version = "0.15.0", optional = true }
-typst-pdf = { version = "0.15.0", optional = true }
-typst-render = { version = "0.15.0", optional = true }
-typst-syntax = { version = "0.15.0", optional = true }
-typst-timing = { version = "0.15.0", optional = true }
-typst-utils = { version = "0.15.0", optional = true }
+typst = { version = "0.15.1", optional = true }
+typst-assets = { version = "0.15.1", features = ["fonts"], optional = true }
+typst-kit = { version = "0.15.1", default-features = false, features = ["embedded-fonts", "scan-fonts", "system-files", "system-downloader", "datetime"], optional = true }
+typst-layout = { version = "0.15.1", optional = true }
+typst-pdf = { version = "0.15.1", optional = true }
+typst-render = { version = "0.15.1", optional = true }
+typst-syntax = { version = "0.15.1", optional = true }
+typst-timing = { version = "0.15.1", optional = true }
+typst-utils = { version = "0.15.1", optional = true }
 
 # Formatting
 typstyle-core = { version = "0.15", optional = true }
