@@ -20,22 +20,18 @@ path = "src/lib.rs"
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"], optional = true }
 ecow = { version = "0.2", features = ["serde"], optional = true }
-parking_lot = "0.12"
 typst = { version = "0.15.1", optional = true }
-typst-assets = { version = "0.15.1", features = ["fonts"], optional = true }
 typst-kit = { version = "0.15.1", default-features = false, features = ["embedded-fonts", "scan-fonts", "system-files", "system-downloader", "datetime"], optional = true }
 typst-layout = { version = "0.15.1", optional = true }
 typst-pdf = { version = "0.15.1", optional = true }
 typst-render = { version = "0.15.1", optional = true }
 typst-syntax = { version = "0.15.1", optional = true }
-typst-timing = { version = "0.15.1", optional = true }
-typst-utils = { version = "0.15.1", optional = true }
 
 # Formatting
 typstyle-core = { version = "0.15", optional = true }
 
 # PDF metadata management
-lopdf = { version = "0.42", optional = true }
+lopdf = { version = "0.47", optional = true }
 xmp-writer = { version = "0.3", optional = true }
 
 # PDF permission setting
@@ -56,17 +52,17 @@ open = { version = "5.3", optional = true }
 log = { version = "0.4", default-features = false, optional = true }
 
 [build-dependencies]
-dirs = "6.0"
+dirs = "7.0"
 flate2 = "1.1"
 serde = { version = "1.0", features = ["derive"] }
 tar = "0.4"
 toml = "1.1"
 ureq = "3.3"
-zip = "8.6"
+zip = "9.6"
 
 [dev-dependencies]
 anyhow = "1.0"
-sha2_hasher = { version = "0.3", features = ["sync"] }
+sha2_hasher = { version = "0.4", features = ["sync"] }
 test-context = "0.5"
 tokio = { version = "1.52", features = ["net"] }
 
@@ -86,14 +82,11 @@ compile = [
     "dep:chrono",
     "dep:ecow",
     "dep:typst",
-    "dep:typst-assets",
     "dep:typst-kit",
     "dep:typst-layout",
     "dep:typst-pdf",
     "dep:typst-render",
     "dep:typst-syntax",
-    "dep:typst-timing",
-    "dep:typst-utils",
 ]
 format = ["dep:typstyle-core"]
 pdf_metadata = ["dep:chrono", "dep:lopdf", "dep:xmp-writer"]

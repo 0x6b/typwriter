@@ -89,7 +89,7 @@ fn extract_zip(data: &[u8], dest: &Path) -> Result<(), Box<dyn Error>> {
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
-        let name = file.name().to_string();
+        let name = file.name()?.to_string();
 
         // Skip directories and non-ttf/otf files
         if file.is_dir() {
